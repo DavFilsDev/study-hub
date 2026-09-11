@@ -82,6 +82,31 @@ UI → Riverpod → UseCase → Repository → RepositoryImpl
 3. Récupérer `Project URL` et clé `anon`/`publishable` depuis **Project Settings → API**.
 4. Renseigner ces valeurs dans `lib/core/config/supabase_config.dart`.
 
+## Écrans de l'application (data-driven)
+
+| Écran | Source de données |
+|---|---|
+| LoginScreen | Supabase Auth (signInWithPassword) |
+| RegisterScreen | Supabase Auth (signUp) |
+| CourseListScreen | REST API via Dio → table `courses` |
+| CourseDetailScreen | REST API via Dio → `courses` + `resources` |
+
+## Gestion du JWT et de la session
+
+- Supabase Auth émet un JWT à la connexion/inscription, stocké et géré par `supabase_flutter`.
+- Le refresh du token avant expiration est **entièrement géré par le SDK Supabase** (aucune réimplémentation manuelle nécessaire ni recommandée).
+- À chaque appel Dio, l'interceptor (`lib/core/network/dio_client.dart`) lit `Supabase.instance.client.auth.currentSession?.accessToken` et l'injecte en header `Authorization: Bearer <token>`.
+- Les tables `courses`/`resources` sont protégées par RLS (`to authenticated`) : sans JWT valide, l'API REST renvoie un résultat vide ou une erreur 401/403.
+
+## Tests
+
+9 tests unitaires sur la couche repository :
+- `test/repositories/auth_repository_impl_test.dart` (3 tests)
+- `test/repositories/course_repository_impl_test.dart` (3 tests)
+- `test/repositories/resource_repository_impl_test.dart` (3 tests)
+
+Scénarios couverts : succès + mise en cache, fallback offline avec cache, fallback offline sans cache (erreur typée).
+
 ## Lancer le projet
 
 ```bash
@@ -96,7 +121,7 @@ flutter run
 flutter test
 ```
 
-6 tests unitaires couvrent les repositories `courses` et `resources` : succès + cache, fallback offline avec cache, fallback offline sans cache (erreur).
+9 tests unitaires couvrent les repositories `auth` , `courses` et `resources` : succès + cache, fallback offline avec cache, fallback offline sans cache (erreur).
 
 ## CI
 
