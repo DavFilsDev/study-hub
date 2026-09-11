@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_providers.dart';
 import '../../../resources/presentation/providers/resource_providers.dart';
+import '../../../../core/widgets/error_view.dart';
 
 class CourseDetailScreen extends ConsumerWidget {
   final String courseId;
@@ -30,11 +31,17 @@ class CourseDetailScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Détail du cours')),
       body: courseAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Erreur: $err')),
+        error: (err, _) => ErrorView(
+          message: 'Une erreur est survenue.',
+          onRetry: () => ref.invalidate(courseDetailProvider(courseId)),
+        ),
         data: (result) {
           final (course, failure) = result;
           if (course == null) {
-            return Center(child: Text(failure?.message ?? 'Cours introuvable'));
+            return ErrorView(
+              message: failure?.message ?? 'Cours introuvable',
+              onRetry: () => ref.invalidate(courseDetailProvider(courseId)),
+            );
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,12 +69,22 @@ class CourseDetailScreen extends ConsumerWidget {
                 child: resourcesAsync.when(
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
-                  error: (err, _) => Center(child: Text('Erreur: $err')),
+                  error: (err, _) => ErrorView(
+                    message: 'Une erreur est survenue.',
+                    onRetry: () =>
+                        ref.invalidate(resourcesResultProvider(courseId)),
+                  ),
                   data: (res) {
                     final (resources, failure) = res;
                     if (resources == null || resources.isEmpty) {
-                      return Center(
-                          child: Text(failure?.message ?? 'Aucune ressource'));
+                      if (failure != null) {
+                        return ErrorView(
+                          message: failure.message,
+                          onRetry: () =>
+                              ref.invalidate(resourcesResultProvider(courseId)),
+                        );
+                      }
+                      return const Center(child: Text('Aucune ressource'));
                     }
                     return ListView.builder(
                       itemCount: resources.length,
