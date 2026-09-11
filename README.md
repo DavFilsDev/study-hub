@@ -82,6 +82,8 @@ UI → Riverpod → UseCase → Repository → RepositoryImpl
 3. Récupérer `Project URL` et clé `anon`/`publishable` depuis **Project Settings → API**.
 4. Renseigner ces valeurs dans `lib/core/config/supabase_config.dart`.
 
+
+
 ## Écrans de l'application (data-driven)
 
 | Écran | Source de données |
@@ -97,6 +99,12 @@ UI → Riverpod → UseCase → Repository → RepositoryImpl
 - Le refresh du token avant expiration est **entièrement géré par le SDK Supabase** (aucune réimplémentation manuelle nécessaire ni recommandée).
 - À chaque appel Dio, l'interceptor (`lib/core/network/dio_client.dart`) lit `Supabase.instance.client.auth.currentSession?.accessToken` et l'injecte en header `Authorization: Bearer <token>`.
 - Les tables `courses`/`resources` sont protégées par RLS (`to authenticated`) : sans JWT valide, l'API REST renvoie un résultat vide ou une erreur 401/403.
+
+### Détail technique : interceptor Dio ↔ session Supabase
+
+Le SDK `supabase_flutter` stocke la session (access token + refresh token) en mémoire et sur disque, et déclenche automatiquement un refresh silencieux avant expiration du token — ce mécanisme est interne au SDK et ne nécessite aucun code applicatif.
+
+L'interceptor Dio (`lib/core/network/dio_client.dart`) ne fait **aucune gestion de refresh lui-même** : à chaque requête sortante, il lit simplement `Supabase.instance.client.auth.currentSession?.accessToken`, qui reflète toujours le token valide le plus récent maintenu par le SDK. Ce découplage évite de dupliquer une logique de refresh déjà fiable et testée par Supabase.
 
 ## Tests
 
