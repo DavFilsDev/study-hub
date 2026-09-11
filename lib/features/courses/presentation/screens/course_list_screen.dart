@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_providers.dart';
 import '../../../../core/network/connectivity_provider.dart';
+import '../../../../core/widgets/error_view.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../auth/presentation/screens/login_screen.dart';
 import 'course_detail_screen.dart';
@@ -61,11 +62,17 @@ class CourseListScreen extends ConsumerWidget {
           Expanded(
             child: coursesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('Erreur: $err')),
+              error: (err, _) => ErrorView(
+                message: 'Une erreur est survenue.',
+                onRetry: () => ref.invalidate(coursesResultProvider),
+              ),
               data: (result) {
                 final (_, failure) = result;
                 if (failure != null && filteredCourses.isEmpty) {
-                  return Center(child: Text(failure.message));
+                  return ErrorView(
+                    message: failure.message,
+                    onRetry: () => ref.invalidate(coursesResultProvider),
+                  );
                 }
                 if (filteredCourses.isEmpty) {
                   return const Center(child: Text('Aucun cours trouvé'));
