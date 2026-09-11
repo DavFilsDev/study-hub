@@ -5,7 +5,6 @@ import '../../domain/entities/course.dart';
 import '../../domain/repositories/course_repository.dart';
 import '../datasources/course_remote_datasource.dart';
 import '../datasources/course_local_datasource.dart';
-import '../models/course_model.dart';
 
 class CourseRepositoryImpl implements CourseRepository {
   final CourseRemoteDataSource remote;
