@@ -40,7 +40,24 @@ class AuthGate extends ConsumerWidget {
     return authState.when(
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (_, __) => const LoginScreen(),
+      error: (_, __) => Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Impossible de vérifier votre session.'),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                ),
+                child: const Text('Se connecter'),
+              ),
+            ],
+          ),
+        ),
+      ),
       data: (user) =>
           user == null ? const LoginScreen() : const CourseListScreen(),
     );
