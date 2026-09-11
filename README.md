@@ -17,7 +17,7 @@ Application mobile Flutter de partage de ressources universitaires (cours, docum
 | Domaine | Techno |
 |---|---|
 | Framework | Flutter 3.47 |
-| State management | Riverpod (manuel, sans codegen) |
+| State management | Riverpod (manuel, sans codegen — choix pédagogique assumé pour garder une compréhension complète du flux de données) 
 | HTTP client | Dio (appels REST vers Supabase PostgREST) |
 | Auth & session | Supabase Auth (JWT géré automatiquement) |
 | Backend | Supabase (PostgreSQL + PostgREST) |
