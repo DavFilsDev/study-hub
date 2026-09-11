@@ -5,8 +5,11 @@ Failure mapDioExceptionToFailure(DioException e) {
   switch (e.type) {
     case DioExceptionType.connectionTimeout:
     case DioExceptionType.receiveTimeout:
+      return const NetworkFailure(
+          'Le serveur met trop de temps à répondre. Réessaie.');
     case DioExceptionType.connectionError:
-      return const NetworkFailure();
+      return const NetworkFailure(
+          'Pas de connexion internet. Données locales utilisées si disponibles.');
     case DioExceptionType.badResponse:
       final status = e.response?.statusCode;
       if (status == 401 || status == 403) {

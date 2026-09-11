@@ -4,9 +4,10 @@ sealed class Failure {
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure()
-      : super(
-            'Pas de connexion internet. Données locales utilisées si disponibles.');
+  const NetworkFailure(
+      [String message =
+          'Pas de connexion internet. Données locales utilisées si disponibles.'])
+      : super(message);
 }
 
 class ServerFailure extends Failure {
