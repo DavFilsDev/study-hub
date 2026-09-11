@@ -17,7 +17,7 @@ Application mobile Flutter de partage de ressources universitaires (cours, docum
 | Domaine | Techno |
 |---|---|
 | Framework | Flutter 3.47 |
-| State management | Riverpod (manuel, sans codegen — choix pédagogique assumé pour garder une compréhension complète du flux de données) 
+| State management | Riverpod (manuel, sans codegen — choix pédagogique assumé pour garder une compréhension complète du flux de données) |
 | HTTP client | Dio (appels REST vers Supabase PostgREST) |
 | Auth & session | Supabase Auth (JWT géré automatiquement) |
 | Backend | Supabase (PostgreSQL + PostgREST) |
@@ -106,14 +106,6 @@ Le SDK `supabase_flutter` stocke la session (access token + refresh token) en m�
 
 L'interceptor Dio (`lib/core/network/dio_client.dart`) ne fait **aucune gestion de refresh lui-même** : à chaque requête sortante, il lit simplement `Supabase.instance.client.auth.currentSession?.accessToken`, qui reflète toujours le token valide le plus récent maintenu par le SDK. Ce découplage évite de dupliquer une logique de refresh déjà fiable et testée par Supabase.
 
-## Tests
-
-9 tests unitaires sur la couche repository :
-- `test/repositories/auth_repository_impl_test.dart` (3 tests)
-- `test/repositories/course_repository_impl_test.dart` (3 tests)
-- `test/repositories/resource_repository_impl_test.dart` (3 tests)
-
-Scénarios couverts : succès + mise en cache, fallback offline avec cache, fallback offline sans cache (erreur typée).
 
 ## Lancer le projet
 
@@ -129,7 +121,9 @@ flutter run
 flutter test
 ```
 
-9 tests unitaires couvrent les repositories `auth` , `courses` et `resources` : succès + cache, fallback offline avec cache, fallback offline sans cache (erreur).
+13 tests automatisés :
+- 9 tests unitaires sur la couche repository (`auth`, `courses`, `resources` — 3 chacun) : succès + mise en cache, fallback offline avec cache, fallback offline sans cache (erreur typée).
+- 4 tests widget sur l'UI (`LoginScreen`, `CourseListScreen`) : affichage des champs, gestion des erreurs, affichage des données, filtrage par recherche.
 
 ## CI
 
