@@ -29,7 +29,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (_) => const CourseListScreen()));
     } catch (e) {
-      setState(() => _error = 'Connexion impossible : identifiants incorrects');
+      final msg = e.toString().toLowerCase();
+      if (msg.contains('invalid') || msg.contains('credentials')) {
+        setState(() => _error = 'Email ou mot de passe incorrect.');
+      } else if (msg.contains('network') || msg.contains('socket')) {
+        setState(() => _error = 'Pas de connexion internet.');
+      } else {
+        setState(() => _error = 'Connexion impossible. Réessaie plus tard.');
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
