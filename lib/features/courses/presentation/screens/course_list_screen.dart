@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_providers.dart';
+import '../../../../core/network/connectivity_provider.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../auth/presentation/screens/login_screen.dart';
 import 'course_detail_screen.dart';
@@ -34,6 +35,17 @@ class CourseListScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
+          if (ref.watch(isOfflineProvider))
+            Container(
+              width: double.infinity,
+              color: Colors.orange.shade700,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: const Text(
+                'Mode hors ligne — données en cache',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(12),
             child: TextField(
