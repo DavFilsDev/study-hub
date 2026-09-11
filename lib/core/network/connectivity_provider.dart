@@ -8,7 +8,7 @@ final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
 final isOfflineProvider = Provider<bool>((ref) {
   final result = ref.watch(connectivityProvider);
   return result.whenOrNull(
-        data: (r) => r.every((e) => e == ConnectivityResult.none),
+        data: (r) => r.contains(ConnectivityResult.none),
       ) ??
       false;
 });
