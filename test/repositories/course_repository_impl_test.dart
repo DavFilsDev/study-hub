@@ -16,7 +16,7 @@ void main() {
   late MockLocal local;
   late CourseRepositoryImpl repository;
 
-  final tCourse = const CourseModel(
+  const tCourse = CourseModel(
     hiveId: '1',
     hiveTitle: 'Algorithmique',
     hiveCode: 'ALG101',

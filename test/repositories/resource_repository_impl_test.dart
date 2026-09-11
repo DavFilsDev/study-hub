@@ -16,7 +16,7 @@ void main() {
   late MockLocal local;
   late ResourceRepositoryImpl repository;
 
-  final tResource = const ResourceModel(
+  const tResource = ResourceModel(
     hiveId: 'r1',
     hiveCourseId: '1',
     hiveTitle: 'Cours PDF',
